@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ai-lives — Управление сессиями</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --radius: 8px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header h1 span {
+            color: var(--accent);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .status-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-idle .dot { background: var(--text-muted); }
+        .status-idle { background: rgba(139,148,158,0.15); color: var(--text-muted); }
+        .status-running .dot { background: var(--yellow); animation: pulse 1s infinite; }
+        .status-running { background: rgba(210,153,34,0.15); color: var(--yellow); }
+        .status-auto .dot { background: var(--green); animation: pulse 1s infinite; }
+        .status-auto { background: rgba(63,185,80,0.15); color: var(--green); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .card-full { grid-column: 1 / -1; }
+
+        .card h2 {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--surface);
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover { border-color: var(--accent); color: var(--accent); }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: #4090e0; border-color: #4090e0; color: #fff; }
+
+        .btn-danger {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .btn-danger:hover { background: rgba(248,81,73,0.15); }
+
+        .btn-success {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .btn-success:hover { background: rgba(63,185,80,0.15); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: var(--radius);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .last-session {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            font-size: 14px;
+            line-height: 1.65;
+            overflow: visible;
+            word-wrap: break-word;
+        }
+
+        .last-session h1,
+        .last-session h2,
+        .last-session h3 {
+            color: var(--text);
+            line-height: 1.25;
+            margin: 18px 0 10px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .last-session h1:first-child,
+        .last-session h2:first-child,
+        .last-session h3:first-child { margin-top: 0; }
+        .last-session h1 { font-size: 22px; }
+        .last-session h2 { font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+        .last-session h3 { font-size: 15px; color: var(--text-muted); }
+        .last-session p { margin: 10px 0; }
+        .last-session ul,
+        .last-session ol { margin: 10px 0 10px 22px; }
+        .last-session li { margin: 4px 0; }
+        .last-session strong { color: var(--text); font-weight: 700; }
+        .last-session code {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1px 5px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.92em;
+        }
+        .last-session pre {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+        .last-session pre code {
+            background: transparent;
+            border: 0;
+            padding: 0;
+        }
+        .log-area {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 12px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow-y: auto;
+            color: var(--text-muted);
+        }
+
+        .log-entry { margin-bottom: 4px; }
+        .log-entry.error { color: var(--red); }
+        .log-entry.success { color: var(--green); }
+        .log-entry.info { color: var(--accent); }
+        .log-entry.session { color: var(--text-muted); }
+
+        .ctx-sections {
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .ctx-sections .ctx-row {
+            display: flex;
+            align-items: center;
+            padding: 3px 0;
+            gap: 8px;
+        }
+        .ctx-sections .ctx-icon { width: 18px; text-align: center; flex-shrink: 0; }
+        .ctx-sections .ctx-name { flex: 1; color: var(--text); }
+        .ctx-sections .ctx-meta { color: var(--text-muted); font-size: 12px; }
+        .ctx-sections .ctx-stale { color: var(--yellow); }
+        .ctx-sections .ctx-missing { color: var(--red); }
+
+        .ctx-recs {
+            margin-top: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .ctx-recs .ctx-rec {
+            padding: 4px 8px;
+            margin: 3px 0;
+            border-radius: 4px;
+            background: var(--surface);
+            border-left: 3px solid var(--border);
+        }
+        .ctx-recs .ctx-rec.good { border-left-color: var(--green); }
+        .ctx-recs .ctx-rec.warn { border-left-color: var(--yellow); }
+        .ctx-recs .ctx-rec.bad { border-left-color: var(--red); }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--border);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle.active { background: var(--green); }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .toggle.active::after { transform: translateX(22px); }
+
+        .toggle-label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .connection-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .connection-indicator .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .connection-indicator.connected .dot { background: var(--green); }
+        .connection-indicator.disconnected .dot { background: var(--red); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span>ai-lives</span> — Управление сессиями</h1>
+        <div style="display:flex;align-items:center;gap:16px;">
+            <div id="connection" class="connection-indicator disconnected">
+                <span class="dot"></span>
+                <span>Отключено</span>
+            </div>
+            <div id="statusBadge" class="status-badge status-idle">
+                <span class="dot"></span>
+                <span id="statusText">Ожидание</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Управление -->
+        <div class="card">
+            <h2>Управление</h2>
+            <div class="controls" style="margin-bottom:16px;">
+                <button id="btnStart" class="btn btn-primary" onclick="startSession()">
+                    ▶ Запустить сессию
+                </button>
+            </div>
+            <div class="toggle-container">
+                <div id="autoToggle" class="toggle" onclick="toggleAuto()"></div>
+                <span class="toggle-label" id="autoLabel">Автосессия выключена</span>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="card">
+            <h2>Статистика</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="sessionCount">0</div>
+                    <div class="stat-label">Сессий</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="lastRunTime">—</div>
+                    <div class="stat-label">Последний запуск</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="uptimeValue">0:00</div>
+                    <div class="stat-label">Аптайм</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="nextStartValue">—</div>
+                    <div class="stat-label">До старта</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Метрики проекта -->
+        <div class="card card-full">
+            <h2>📊 Метрики проекта</h2>
+            <div class="stats-grid" id="projectMetrics">
+                <div class="stat-item">
+                    <div class="stat-value" id="metricTests">—</div>
+                    <div class="stat-label">Тестов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="metricCoverage">—</div>
+                    <div class="stat-label">Покрытие</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="metricScripts">—</div>
+                    <div class="stat-label">Скриптов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="metricTools">—</div>
+                    <div class="stat-label">Инструментов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="metricNoise">—</div>
+                    <div class="stat-label">Шумности</div>
+                </div>
+            </div>
+            <div style="margin-top:12px;">
+                <button id="btnCompress" class="btn" onclick="compressMemory()">
+                    🗜️ Сжать память
+                </button>
+                <span id="compressResult" style="margin-left:12px;font-size:13px;color:var(--text-muted);"></span>
+            </div>
+        </div>
+
+        <!-- Состояние контекста -->
+        <div class="card card-full">
+            <h2>🧠 Состояние контекста</h2>
+            <div class="stats-grid" id="contextStats">
+                <div class="stat-item">
+                    <div class="stat-value" id="ctxHealth">—</div>
+                    <div class="stat-label">Здоровье</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="ctxTokens">—</div>
+                    <div class="stat-label">Токенов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="ctxLines">—</div>
+                    <div class="stat-label">Строк</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="ctxQuestions">—</div>
+                    <div class="stat-label">Открытых вопросов</div>
+                </div>
+            </div>
+            <div id="ctxSections" class="ctx-sections">Загрузка...</div>
+            <div id="ctxRecs" class="ctx-recs"></div>
+        </div>
+
+        <!-- Текущая цель -->
+        <div class="card card-full">
+            <h2>🎯 Текущая цель</h2>
+            <div id="currentPlan" class="last-session">Загрузка...</div>
+        </div>
+
+        <!-- Лог -->
+        <div class="card card-full">
+            <h2>Лог событий</h2>
+            <div id="logArea" class="log-area">
+                <div class="log-entry info">Ожидание подключения к серверу...</div>
+            </div>
+        </div>
+
+        <!-- Последняя сессия -->
+        <div class="card card-full">
+            <h2>state/last_session.md</h2>
+            <div id="lastSession" class="last-session">Загрузка...</div>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+
+</body>
+</html>

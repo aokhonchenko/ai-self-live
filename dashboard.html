@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ai-lives — Дашборд проекта</title>
+<style>
+    :root {
+        --bg: #0d1117;
+        --surface: #161b22;
+        --border: #30363d;
+        --text: #c9d1d9;
+        --text-muted: #8b949e;
+        --accent: #58a6ff;
+        --green: #3fb950;
+        --orange: #d29922;
+        --red: #f85149;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        padding: 2rem;
+        line-height: 1.6;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--accent); }
+    h2 { font-size: 1.3rem; margin: 2rem 0 1rem; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 0.3rem; }
+    h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; color: var(--text); }
+    .subtitle { color: var(--text-muted); margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.2rem;
+    }
+    .card .value { font-size: 2rem; font-weight: 700; color: var(--green); }
+    .card .label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+    th, td { text-align: left; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+    code { background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+    .tree { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; color: var(--text-muted); white-space: pre-wrap; }
+    .history-table td:first-child { color: var(--accent); }
+    footer { margin-top: 3rem; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<h1>🧠 ai-lives</h1>
+<p class="subtitle">Дашборд проекта · Обновлено: 2026-07-07 23:22 RTZ 2 (зима)</p>
+
+<!-- Сводка -->
+<h2>📊 Сводка</h2>
+<div class="grid">
+    <div class="card">
+        <div class="value">93</div>
+        <div class="label">Python-файлов</div>
+    </div>
+    <div class="card">
+        <div class="value">15,068</div>
+        <div class="label">Строк кода</div>
+    </div>
+    <div class="card">
+        <div class="value">436</div>
+        <div class="label">Тестов</div>
+    </div>
+    <div class="card">
+        <div class="value">28</div>
+        <div class="label">Файлов тестов</div>
+    </div>
+    <div class="card">
+        <div class="value">118</div>
+        <div class="label">Функций в скриптах</div>
+    </div>
+    <div class="card">
+        <div class="value">6</div>
+        <div class="label">Файлов состояния</div>
+    </div>
+</div>
+
+<!-- Структура -->
+<h2>📁 Структура проекта</h2>
+<div class="tree"><code>├── .pytest_cache</code><br><code>│   ├── v</code><br><code>│   │   └── cache</code><br><code>│   │       └── nodeids</code><br><code>│   ├── .gitignore</code><br><code>│   ├── CACHEDIR.TAG</code><br><code>│   └── README.md</code><br><code>├── .venv</code><br><code>│   ├── Lib</code><br><code>│   │   └── site-packages</code><br><code>│   │       ├── __pycache__</code><br><code>│   │       ├── _pytest</code><br><code>│   │       ├── colorama</code><br><code>│   │       ├── colorama-0.4.6.dist-info</code><br><code>│   │       ├── coverage</code><br><code>│   │       ├── coverage-7.15.0.dist-info</code><br><code>│   │       ├── iniconfig</code><br><code>│   │       ├── iniconfig-2.3.0.dist-info</code><br><code>│   │       ├── packaging</code><br><code>│   │       ├── packaging-26.2.dist-info</code><br><code>│   │       ├── pluggy</code><br><code>│   │       ├── pluggy-1.6.0.dist-info</code><br><code>│   │       ├── pygments</code><br><code>│   │       ├── pygments-2.20.0.dist-info</code><br><code>│   │       ├── pytest</code><br><code>│   │       ├── pytest-9.1.1.dist-info</code><br><code>│   │       ├── pytest_cov</code><br><code>│   │       ├── pytest_cov-7.1.0.dist-info</code><br><code>│   │       ├── _virtualenv.pth</code><br><code>│   │       ├── _virtualenv.py</code><br><code>│   │       ├── a1_coverage.pth</code><br><code>│   │       └── py.py</code><br><code>│   ├── Scripts</code><br><code>│   │   ├── activate</code><br><code>│   │   ├── activate.bat</code><br><code>│   │   ├── activate.csh</code><br><code>│   │   ├── activate.fish</code><br><code>│   │   ├── activate.nu</code><br><code>│   │   ├── activate.ps1</code><br><code>│   │   ├── activate_this.py</code><br><code>│   │   ├── coverage-3.11.exe</code><br><code>│   │   ├── coverage.exe</code><br><code>│   │   ├── coverage3.exe</code><br><code>│   │   ├── deactivate.bat</code><br><code>│   │   ├── py.test.exe</code><br><code>│   │   ├── pydoc.bat</code><br><code>│   │   ├── pygmentize.exe</code><br><code>│   │   ├── pytest.exe</code><br><code>│   │   ├── python.exe</code><br><code>│   │   └── pythonw.exe</code><br><code>│   ├── .gitignore</code><br><code>│   ├── .lock</code><br><code>│   ├── CACHEDIR.TAG</code><br><code>│   └── pyvenv.cfg</code><br><code>├── config</code><br><code>│   └── project.toml</code><br><code>├── knowledge</code><br><code>│   ├── README.md</code><br><code>│   ├── project-map.md</code><br><code>│   ├── system_map.md</code><br><code>│   └── tools_architecture.md</code><br><code>├── logs</code><br><code>│   └── history.md</code><br><code>├── projects</code><br><code>│   ├── README.md</code><br><code>│   └── TEMPLATE.md</code><br><code>├── questions</code><br><code>│   └── README.md</code><br><code>├── research</code><br><code>│   ├── 0003-context-module.md</code><br><code>│   └── 0005-context-module-analysis.md</code><br><code>├── runs</code><br><code>│   └── .gitkeep</code><br><code>├── scripts</code><br><code>│   ├── __pycache__</code><br><code>│   │   ├── __init__.cpython-311.pyc</code><br><code>│   │   ├── command_runners.cpython-311.pyc</code><br><code>│   │   ├── external_projects.cpython-311.pyc</code><br><code>│   │   ├── file_tools.cpython-311.pyc</code><br><code>│   │   ├── llm_client.cpython-311.pyc</code><br><em>... и ещё 246 записей</em></div>
+
+<!-- Скрипты -->
+<h2>⚙️ Скрипты</h2>
+<p style="color:var(--text-muted);font-size:0.9rem;">2186 строк, 11 файлов</p>
+<table>
+    <tr><th>Файл</th><th>Строки</th><th>Функции</th><th>Классы</th><th>Docstring</th></tr>
+    
+        <tr>
+            <td><code>__init__.py</code></td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>command_runners.py</code></td>
+            <td>131</td>
+            <td>7</td>
+            <td>2</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>external_projects.py</code></td>
+            <td>122</td>
+            <td>9</td>
+            <td>1</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>file_tools.py</code></td>
+            <td>79</td>
+            <td>7</td>
+            <td>0</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>llm_client.py</code></td>
+            <td>121</td>
+            <td>9</td>
+            <td>2</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>project_dashboard.py</code></td>
+            <td>407</td>
+            <td>11</td>
+            <td>1</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>run_agent.py</code></td>
+            <td>367</td>
+            <td>20</td>
+            <td>2</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>run_session.py</code></td>
+            <td>251</td>
+            <td>10</td>
+            <td>0</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>run_snapshots.py</code></td>
+            <td>70</td>
+            <td>5</td>
+            <td>1</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>session_transaction.py</code></td>
+            <td>484</td>
+            <td>31</td>
+            <td>1</td>
+            <td>✅</td>
+        </tr>
+        <tr>
+            <td><code>sleep_memory.py</code></td>
+            <td>153</td>
+            <td>9</td>
+            <td>0</td>
+            <td>✅</td>
+        </tr>
+</table>
+
+<!-- Тесты -->
+<h2>🧪 Тесты</h2>
+<p style="color:var(--text-muted);font-size:0.9rem;">436 тестов в 28 файлах</p>
+<table>
+    <tr><th>Файл</th><th>Тестов</th><th>Строк</th></tr>
+    
+        <tr>
+            <td><code>test_agent_tool_registry.py</code></td>
+            <td>11</td>
+            <td>162</td>
+        </tr>
+        <tr>
+            <td><code>test_apply_patch.py</code></td>
+            <td>31</td>
+            <td>496</td>
+        </tr>
+        <tr>
+            <td><code>test_code_analyzer.py</code></td>
+            <td>31</td>
+            <td>538</td>
+        </tr>
+        <tr>
+            <td><code>test_command_runner.py</code></td>
+            <td>28</td>
+            <td>333</td>
+        </tr>
+        <tr>
+            <td><code>test_command_runners.py</code></td>
+            <td>5</td>
+            <td>159</td>
+        </tr>
+        <tr>
+            <td><code>test_compat.py</code></td>
+            <td>11</td>
+            <td>191</td>
+        </tr>
+        <tr>
+            <td><code>test_context.py</code></td>
+            <td>13</td>
+            <td>173</td>
+        </tr>
+        <tr>
+            <td><code>test_dashboard_generate.py</code></td>
+            <td>2</td>
+            <td>28</td>
+        </tr>
+        <tr>
+            <td><code>test_external_project_replication.py</code></td>
+            <td>5</td>
+            <td>123</td>
+        </tr>
+        <tr>
+            <td><code>test_file_tools.py</code></td>
+            <td>11</td>
+            <td>116</td>
+        </tr>
+        <tr>
+            <td><code>test_llm_client.py</code></td>
+            <td>6</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td><code>test_partial_reader.py</code></td>
+            <td>22</td>
+            <td>326</td>
+        </tr>
+        <tr>
+            <td><code>test_prompt_builder.py</code></td>
+            <td>23</td>
+            <td>416</td>
+        </tr>
+        <tr>
+            <td><code>test_read_file.py</code></td>
+            <td>14</td>
+            <td>144</td>
+        </tr>
+        <tr>
+            <td><code>test_read_lines.py</code></td>
+            <td>19</td>
+            <td>199</td>
+        </tr>
+        <tr>
+            <td><code>test_reader.py</code></td>
+            <td>34</td>
+            <td>546</td>
+        </tr>
+        <tr>
+            <td><code>test_reader_directories.py</code></td>
+            <td>2</td>
+            <td>41</td>
+        </tr>
+        <tr>
+            <td><code>test_replace_text.py</code></td>
+            <td>12</td>
+            <td>123</td>
+        </tr>
+        <tr>
+            <td><code>test_run_agent.py</code></td>
+            <td>14</td>
+            <td>313</td>
+        </tr>
+        <tr>
+            <td><code>test_run_command.py</code></td>
+            <td>32</td>
+            <td>390</td>
+        </tr>
+        <tr>
+            <td><code>test_run_session.py</code></td>
+            <td>15</td>
+            <td>209</td>
+        </tr>
+        <tr>
+            <td><code>test_run_snapshots.py</code></td>
+            <td>2</td>
+            <td>36</td>
+        </tr>
+        <tr>
+            <td><code>test_self_review.py</code></td>
+            <td>25</td>
+            <td>405</td>
+        </tr>
+        <tr>
+            <td><code>test_server.py</code></td>
+            <td>9</td>
+            <td>215</td>
+        </tr>
+        <tr>
+            <td><code>test_session_transaction.py</code></td>
+            <td>35</td>
+            <td>544</td>
+        </tr>
+        <tr>
+            <td><code>test_sleep_memory.py</code></td>
+            <td>10</td>
+            <td>178</td>
+        </tr>
+        <tr>
+            <td><code>test_tool_runtime.py</code></td>
+            <td>2</td>
+            <td>39</td>
+        </tr>
+        <tr>
+            <td><code>test_write_file.py</code></td>
+            <td>12</td>
+            <td>102</td>
+        </tr>
+</table>
+
+<!-- История -->
+<h2>📜 Последние сессии</h2>
+<table class="history-table">
+    <tr><th>Сессия</th><th>Краткое содержание</th></tr>
+    
+        <tr>
+            <td><strong>20 - добавлены тесты для run_command, run_pytest, run_python_script</strong></td>
+            <td>- Время: 2026-07-07 22:55 +0300<br>- Создан `tests/test_run_command.py` — 32 теста для трёх инструментов<br>- Покрыты: `run_command` (10 schema + 8 handle), `run_pytest` (2 schema + 4 handle), `run_python_script` (3 schema + 8 handle)</td>
+        </tr>
+        <tr>
+            <td><strong>21 - проверка и исправление упавшего теста</strong></td>
+            <td>- Время: 2026-07-07 22:58 +0300<br>- Упавший тест `test_get_section` уже был исправлен (использует изолированный `tests/test_data/section_test.md`)<br>- Подтверждён полный прогон: **428 passed, 0 failed**, покрытие 91.3% ✅</td>
+        </tr>
+        <tr>
+            <td><strong>22 - первый сон</strong></td>
+            <td>- Время: 2026-07-07 23:11 +0300<br>- Выбран сон: память чистая, все 428 тестов проходят, покрытие 91.3%<br>- Обновлён `state/sleep/last_sleep.md` с состоянием системы</td>
+        </tr>
+        <tr>
+            <td><strong>23 - удаление BOM и улучшение покрытия sleep_memory</strong></td>
+            <td>- Время: 2026-07-07 23:14 +0300<br>- Удалён BOM (U+FEFF) из `scripts/external_projects.py`, вызывавший SyntaxError<br>- Добавлено 7 новых тестов для `scripts/sleep_memory.py` (было 3, стало 10)</td>
+        </tr>
+        <tr>
+            <td><strong>24 - prompt prepared</strong></td>
+            <td>- Время: 2026-07-07 23:20:33 +0300<br>- Активный промпт: `state/active_prompt.md`<br>- Режим: agent command</td>
+        </tr>
+</table>
+
+<footer>ai-lives · Автономный агент · 2026-07-07 23:22 RTZ 2 (зима)</footer>
+
+</body>
+</html>
